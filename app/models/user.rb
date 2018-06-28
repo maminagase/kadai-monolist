@@ -27,7 +27,7 @@ class User < ApplicationRecord
   
   
     has_many :haves,class_name:'Have'
-    has_many :have_items, through: :have, class_name: 'Item', source: :item
+    has_many :have_items, through: :haves, class_name: 'Item', source: :item
 
   
     def have(item)
@@ -35,8 +35,8 @@ class User < ApplicationRecord
     end
 
     def unhave(item)
-      want = self.haves.find_by(item_id: item.id)
-      want.destroy if have
+      have = self.haves.find_by(item_id: item.id)
+      have.destroy if have
     end
 
     def have?(item)
