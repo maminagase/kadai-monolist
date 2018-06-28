@@ -9,20 +9,38 @@ class User < ApplicationRecord
     has_many :ownerships
     has_many :items, through: :ownerships
     
-     has_many :wants
-  has_many :want_items, through: :wants, class_name: 'Item', source: :item
+    has_many :wants
+    has_many :want_items, through: :wants, class_name: 'Item', source: :item
+    
+    def want(item)
+      self.wants.find_or_create_by(item_id: item.id)
+    end
+
+    def unwant(item)
+      want = self.wants.find_by(item_id: item.id)
+      want.destroy if want
+    end
+
+    def want?(item)
+      self.want_items.include?(item)
+    end
   
-  def want(item)
-    self.wants.find_or_create_by(item_id: item.id)
-  end
+  
+    has_many :haves,class_name:'Have'
+    has_many :have_items, through: :have, class_name: 'Item', source: :item
 
-  def unwant(item)
-    want = self.wants.find_by(item_id: item.id)
-    want.destroy if want
-  end
+  
+    def have(item)
+      self.haves.find_or_create_by(item_id: item.id)
+    end
 
-  def want?(item)
-    self.want_items.include?(item)
-  end
+    def unhave(item)
+      want = self.haves.find_by(item_id: item.id)
+      want.destroy if have
+    end
+
+    def have?(item)
+      self.have_items.include?(item)
+    end
   
 end
